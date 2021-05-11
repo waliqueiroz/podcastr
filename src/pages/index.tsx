@@ -1,8 +1,10 @@
 import { format, parseISO } from "date-fns"
 import ptBR from 'date-fns/locale/pt-BR'
 import { GetStaticProps } from "next"
+import Image from "next/image"
 import { api } from "../services/api"
 import { convertDurationToTimeString } from "../util/convertDurationToTimeString"
+import styles from './home.module.scss'
 
 type Episode = {
   id: string
@@ -17,14 +19,47 @@ type Episode = {
 }
 
 type HomeProps = {
-  episodes: Episode[]
+  allEpisodes: Episode[]
+  latestEpisodes: Episode[]
 }
 
-export default function Home(props: HomeProps) {
+export default function Home({ allEpisodes, latestEpisodes }: HomeProps) {
   return (
-    <div>
-      <h1>Index</h1>
-      <p>{JSON.stringify(props.episodes)}</p>
+    <div className={styles.homepage}>
+      <section className={styles.latestEpisodes}>
+        <h2>Últimos lançamentos</h2>
+
+        <ul>
+          {latestEpisodes.map(episode => {
+            return (
+              <li key={episode.id}>
+                <Image
+                  width={192}
+                  height={192}
+                  src={episode.thumbnail}
+                  alt={episode.title}
+                  objectFit="cover"
+                />
+
+                <div className={styles.episodeDetails}>
+                  <a href="">{episode.title}</a>
+                  <p>{episode.members}</p>
+                  <span>{episode.publishedAt}</span>
+                  <span>{episode.durationAsString}</span>
+                </div>
+
+                <button type="button">
+                  <img src="/img/play-green.svg" alt="Tocar episódio" />
+                </button>
+              </li>
+            )
+          })}
+        </ul>
+
+      </section>
+      <section className={styles.allEpisodes}>
+
+      </section>
     </div>
   )
 }
@@ -41,7 +76,7 @@ export const getStaticProps: GetStaticProps = async () => {
   const episodes = data.map((episode) => {
     return {
       id: episode.id,
-      title: episode.description,
+      title: episode.title,
       thumbnail: episode.thumbnail,
       members: episode.members,
       publishedAt: format(parseISO(episode.published_at), 'd MMM yy', { locale: ptBR }),
@@ -52,9 +87,13 @@ export const getStaticProps: GetStaticProps = async () => {
     }
   })
 
+  const latestEpisodes = episodes.slice(0, 2)
+  const allEpisodes = episodes.slice(2, episodes.length)
+
   return {
     props: {
-      episodes: data,
+      allEpisodes,
+      latestEpisodes
     },
     revalidate: 60 * 60 * 8
   }
