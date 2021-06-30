@@ -4,7 +4,7 @@ import { GetStaticProps } from "next"
 import Image from "next/image"
 import Link from "next/link"
 import { useContext } from "react"
-import { PlayerContext } from "../components/contexts/PlayerContext"
+import { PlayerContext } from "../contexts/PlayerContext"
 import { api } from "../services/api"
 import { convertDurationToTimeString } from "../util/convertDurationToTimeString"
 import styles from './home.module.scss'

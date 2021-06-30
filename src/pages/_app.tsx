@@ -4,7 +4,7 @@ import { Header } from '../components/Header'
 import { Player } from '../components/Player'
 
 import styles from '../styles/app.module.scss'
-import { PlayerProvider } from '../components/contexts/PlayerContext'
+import { PlayerProvider } from '../contexts/PlayerContext'
 
 function MyApp({ Component, pageProps }) {
   return (
